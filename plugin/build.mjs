@@ -6,6 +6,9 @@ const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const plain=source=>source.replace(/^import .*?;\r?\n/gm,'').replace(/^export /gm,'');
 export function buildPlugin() {
   let app=plain(read('app.js'));
+  app=app.replace("$('#export-button').onclick = exportGraph;",'');
+  app=app.replace('点击节点回到思源 · 悬停连线查看思考','点击节点回到思源');
+  app=app.replace('间-思考图谱-','PairSentence-思考图谱-');
   app=app.replace('createApplication({','createApplication({gentle:true,');
   app=app.replace("$('#link-button').onclick = () => perform('link'); $('#reject-button').onclick = () => perform('reject'); $('#skip-button').onclick = () => perform('skip');",`function beginLink(){if(busy||syncing||previewing||!pair)return;$('#thought-dialog').showModal();$('#thought').focus();}
   $('#link-button').onclick=beginLink;
@@ -63,6 +66,8 @@ export function buildPlugin() {
   `+app.slice(themeEnd);
   app=app.replace("localStorage.getItem('pairsentence-theme')||'forest'", "localStorage.getItem('pairsentence-theme')||'auto'");
   let html=read('index.html').match(/<body>([\s\S]*?)<script type="module"/)[1];
+  html=html.replace(/<button id="export-button"[^>]*>[\s\S]*?<\/button>/,'');
+  html=html.replace('aria-label="间，首页"','aria-label="PairSentence，首页"').replace('<span class="brand-mark">间</span>','<span class="brand-mark">🌱</span>');
   html=html.replace(/<div class="thought-label">[\s\S]*?<div class="decision-actions">/, '<div class="decision-actions">');
   html=html.replace(/<button id="reject-button"[\s\S]*?<\/button>/,'');
   html=html.replace('先跳过 <span>→</span>','换一组 <span>→</span>');
@@ -78,7 +83,7 @@ export function buildPlugin() {
   html=html.replace(/<form id="connection-form">[\s\S]*?<\/form>/,'');
   html=html.replace(/<a class="quiet-button" id="download-standalone"[\s\S]*?<\/a>/,'');
   html=html.replace('连接你的思考空间。','保存与备份。').replaceAll('连接与备份','保存与备份').replace('关闭连接设置','关闭备份设置');
-  html=html.replace('<p id="storage-description"></p>','<p id="storage-description">当前工作空间 · 无需填写地址或 Token。图谱、配色及动画偏好随思源数据同步。换设备前，请先在原设备完成同步，再在新设备同步后打开「间」。</p>');
+  html=html.replace('<p id="storage-description"></p>','<p id="storage-description">当前工作空间 · 无需填写地址或 Token。图谱、配色及动画偏好随思源数据同步。换设备前，请先在原设备完成同步，再在新设备同步后打开 PairSentence。</p>');
   html=html.replace('图谱可导出为 JSON；换浏览器或移动独立文件前，先保存一份备份。导入会替换当前图谱。','导入 JSON 备份会替换当前图谱，建议先导出备份。若片段不在当前工作空间中，对应关联将暂不可用，思考记录仍会保留。');
   html=html.replace(/<footer>[\s\S]*?<\/footer>/,'');
   html=html.replace(/<button id="settings-button"[\s\S]*?<\/button>/,'');
@@ -102,7 +107,7 @@ export function buildPlugin() {
   const core=['engine.js','navigation.js','validation.js','application.js','motion.js'].map(file=>plain(read(file))).join('\n');
   css+=`\n.ps-tab{position:absolute;inset:0;transform:translateZ(0);padding:0}.ps-tab .shell{min-height:100%}.ps-tab .topbar{padding-right:28px}.sidebar nav{margin-top:40px}.bottom-note:has(#undo-button[hidden]){display:none}.ps-tab .sidebar{position:absolute;height:100%;inset:0 auto auto 0}@media(max-width:760px){.sidebar nav{margin-top:0}.ps-tab .sidebar{position:static;height:auto}}`;
   css+=`\n.shell>main{margin-left:0;min-width:0;width:100%}.toast{left:50%}.topbar,.ps-tab .topbar{height:68px;padding:0 32px;gap:20px;flex-shrink:0}.workspace-navigation{display:flex;align-items:center;gap:32px;min-width:0}.workspace-navigation .brand{gap:10px;font-size:14px;flex-shrink:0}.workspace-navigation .brand-mark{width:34px;height:36px;font-size:23px;border-radius:10px 10px 10px 3px}.workspace-navigation nav{display:flex;align-items:center;gap:6px;margin:0}.workspace-navigation .nav-item{width:auto;margin:0;padding:10px 15px;gap:8px;white-space:nowrap;font-size:12px}.workspace-navigation .nav-item>span:first-child{font-size:17px}.workspace-navigation .nav-dot{display:none}.workspace-navigation .count{display:inline-block!important;margin-left:3px;font-size:9px}.view{width:min(1320px,100%)}@media(max-width:760px){.topbar,.ps-tab .topbar{height:auto;min-height:62px;padding:12px 20px;gap:10px;flex-wrap:wrap}.workspace-navigation{gap:18px}.workspace-navigation .brand>span:last-child{display:none}.workspace-navigation .nav-item{font-size:11px;padding:9px 10px}.top-actions{margin-left:auto}.top-actions>#save-status{font-size:9px}.ps-mobile .topbar{padding-right:56px}.view{padding-top:25px}}@media(max-width:480px){.topbar,.ps-tab .topbar{padding-left:16px;padding-right:16px;gap:8px}.workspace-navigation{gap:8px}.workspace-navigation .brand-mark{width:28px;height:30px;font-size:20px}.workspace-navigation nav{gap:2px}.workspace-navigation .nav-item{padding:8px;font-size:10px;gap:5px}.top-actions>#save-status{display:none}.top-actions{gap:4px}.ps-mobile .topbar{padding-right:50px}.workspace-navigation .count{font-size:8px}}`;
-  css+='\n'+read('plugin/settings.css');
+  css+='\n'+read('plugin/settings.css')+'\n'+read('plugin/mobile.css');
   const injected=`const standalone=false,userscript=false;const request=(...args)=>adapter.request(...args);\n${core}\n${app}`;
   const icon='data:image/png;base64,'+fs.readFileSync(path.join(root,'plugin/icon.png')).toString('base64');
   return `const PLUGIN_ICON=${JSON.stringify(icon)};\nconst PLUGIN_CSS=${JSON.stringify(css)};\nconst PLUGIN_HTML=${JSON.stringify(html)};\n`+read('plugin/shell.cjs').replace('/* PAIRSENTENCE_APP */',injected).replace('/* PAIRSENTENCE_ADAPTER */',plain(read('plugin/adapter.js')));

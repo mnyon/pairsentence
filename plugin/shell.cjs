@@ -14,7 +14,7 @@ module.exports = class PairSentencePlugin extends Plugin {
     };
     const request=this.adapter.request;
     this.adapter.request=(url,options)=>{
-      if(this.pendingData&&!this.reloading&&options?.method==='PUT')throw new Error('思源同步数据已更新，请清空未提交的思考后重新打开「间」');
+      if(this.pendingData&&!this.reloading&&options?.method==='PUT')throw new Error('思源同步数据已更新，请清空未提交的思考后重新打开 PairSentence');
       return request(url,options);
     };
     this.preferenceQueue=Promise.resolve();
@@ -31,7 +31,7 @@ module.exports = class PairSentencePlugin extends Plugin {
         this.open().catch(e=>showMessage(e.message));
       };
       document.addEventListener('click',this.dockClick,true);
-      this.addDock({type:'launcher',config:{position:'RightTop',size:{width:240,height:0},icon:'iconPairSentence',title:'间 · PairSentence',show:false},data:{},
+      this.addDock({type:'launcher',config:{position:'RightTop',size:{width:240,height:0},icon:'iconPairSentence',title:'PairSentence',show:false},data:{},
         init(){
           // A previously saved open panel can be restored at startup. Close it
           // after the host has finished its synchronous panel construction.
@@ -50,12 +50,12 @@ module.exports = class PairSentencePlugin extends Plugin {
   onLayoutReady() {
     this.layoutReady=true;
     if(globalThis.siyuan?.config?.readonly || globalThis.siyuan?.isPublish)return;
-    if(this.isMobile)this.addTopBar({icon:'iconPairSentence',title:'间 · PairSentence',position:'right',callback:()=>this.open().catch(e=>showMessage(e.message))});
+    if(this.isMobile)this.addTopBar({icon:'iconPairSentence',title:'PairSentence',position:'right',callback:()=>this.open().catch(e=>showMessage(e.message))});
   }
   async open() {
     if(!this.isMobile){
       if(this.disposed)return;
-      await openTab({app:this.app,custom:{id:this.name+'workspace',icon:'iconPairSentence',title:'间 · PairSentence'},openNewTab:false});
+      await openTab({app:this.app,custom:{id:this.name+'workspace',icon:'iconPairSentence',title:'PairSentence'},openNewTab:false});
       if(this.pendingData&&this.host)await this.reload();
       return;
     }
@@ -79,14 +79,14 @@ module.exports = class PairSentencePlugin extends Plugin {
   }
   mount(parent) {
     const host=document.createElement(this.isMobile?'dialog':'div');
-    host.setAttribute('aria-label','间 · PairSentence');
+    host.setAttribute('aria-label','PairSentence');
     host.style.cssText=this.isMobile?'border:0;padding:0;margin:0;width:100vw;max-width:none;height:100dvh;max-height:none;background:transparent;':'position:absolute;inset:0;overflow:hidden;';
     const container=document.createElement('div');host.append(container);
     const shadow=container.attachShadow({mode:'open'});
     const style=document.createElement('style');style.textContent=PLUGIN_CSS;
     const root=document.createElement('div');root.className='ps-root'+(this.isMobile?' ps-mobile':' ps-tab');root.tabIndex=-1;
     root.innerHTML=PLUGIN_HTML;
-    const close=document.createElement('button');close.className='ps-close';close.textContent='×';close.title='返回思源';close.setAttribute('aria-label','收起间，返回思源');
+    const close=document.createElement('button');close.className='ps-close';close.textContent='×';close.title='返回思源';close.setAttribute('aria-label','收起 PairSentence，返回思源');
     close.onclick=()=>this.close();if(this.isMobile)root.append(close);shadow.append(style,root);(parent||document.body).append(host);
     this.host=host;this.root=root;
     host.addEventListener('cancel',e=>{e.preventDefault();this.close();});
@@ -118,7 +118,7 @@ module.exports = class PairSentencePlugin extends Plugin {
   }
   async reload() {
     if(!this.lifecycle||this.reloading||this.disposed)return;
-    if(!this.lifecycle.canReload()){showMessage('收到同步数据，请完成当前操作并清空未提交的思考，再收起并打开「间」以加载。');return;}
+    if(!this.lifecycle.canReload()){showMessage('收到同步数据，请完成当前操作并清空未提交的思考，再收起并打开 PairSentence 以加载。');return;}
     this.reloading=true;
     try {
       await this.preferenceQueue;

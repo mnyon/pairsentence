@@ -1,0 +1,81 @@
+/* Narrow tabs and phone overlays share the same touch-friendly layout. */
+.ps-root{scroll-padding-bottom:24px}
+.ps-mobile{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+.ps-mobile .ps-close{top:calc(10px + env(safe-area-inset-top));right:calc(10px + env(safe-area-inset-right));width:40px;height:40px}
+@media(max-width:760px){
+  .workspace-navigation{flex:1;min-width:0}
+  .workspace-navigation .nav-item{min-height:44px}
+  .view{padding-left:20px;padding-right:20px}
+  .paragraph-card,.flat-node>div,.edge-body{min-width:0}
+  .flat-node p,.edge-body p,.flat-source,.edge-meta>span{overflow-wrap:anywhere}
+  .edge-meta{flex-wrap:wrap}
+  .edge-meta>span{flex:1 1 100%;min-width:0}
+  .edge-meta button{min-width:44px;min-height:44px}
+  .jump-link{display:inline-flex;align-items:center;min-height:44px;font-size:12px}
+  .quiet-button,.primary-button,.secondary-button,.segment button{min-height:44px}
+  input,textarea,.settings-card .theme-picker select{font-size:16px}
+  .search-box{min-height:44px}
+  .search-box input{min-width:0}
+  .map-panel{overflow-x:auto;overscroll-behavior-x:contain}
+  .map-panel svg{min-width:600px}
+  .map-caption{white-space:normal;flex-wrap:wrap;line-height:1.8}
+  .map-caption small{margin-left:0}
+  .map-caption small:after{content:' · 可左右滑动星图'}
+  dialog{max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;overscroll-behavior:contain}
+  dialog .dialog-close{width:44px;height:44px}
+  #thought-dialog textarea{min-height:110px}
+  .link-dialog-actions{flex-wrap:wrap;gap:10px}
+  .settings-card .backup-actions{flex-wrap:wrap;gap:10px}
+  .settings-card .motion-options{gap:4px}
+  .settings-card .motion-options button,.settings-card #preview-motion{min-height:44px}
+}
+@media(max-width:600px){
+  .topbar,.ps-tab .topbar,.ps-mobile .topbar{padding:12px 16px;gap:8px;align-items:flex-start}
+  .workspace-navigation{flex-wrap:wrap;gap:10px;width:100%}
+  .workspace-navigation .brand>span:last-child{display:block;font-size:14px}
+  .workspace-navigation .brand-mark{width:32px;height:34px;font-size:22px}
+  .workspace-navigation nav{width:100%;gap:4px}
+  .workspace-navigation .nav-item{flex:1;justify-content:center;padding:9px 6px;font-size:12px;gap:6px}
+  .workspace-navigation .count{font-size:10px}
+  .top-actions{position:absolute;right:16px;top:14px}
+  .ps-mobile .top-actions{right:calc(60px + env(safe-area-inset-right))}
+  .top-actions #save-status{display:none}
+  .top-actions .icon-button{width:36px;height:36px}
+  .view{padding:24px 16px 20px}
+  h1{font-size:25px;line-height:1.45}
+  .page-heading p{font-size:12px}
+  .session-bar{flex-wrap:wrap;font-size:11px}
+  .session-bar>div:last-child{font-size:10px}
+  .paragraph-card{min-height:0;padding:18px}
+  .paragraph-content{font-size:17px;line-height:1.9;max-height:none;margin:20px 0}
+  .fragment-number,.source-title,.source-bottom{font-size:11px}
+  .source-bottom{gap:8px}
+  .decision-panel .decision-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .main-decisions{display:block;margin:0}
+  .main-decisions .primary-button{width:100%}
+  .decision-panel #skip-button,.decision-panel #link-button{min-height:48px;padding:12px 10px;font-size:14px}
+  .graph-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0}
+  .graph-stats>div{padding:16px;border:0}
+  .graph-stats>div:nth-child(odd){border-right:1px solid var(--line)}
+  .graph-stats>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .graph-stats>div>span{min-height:0;font-size:11px}
+  .graph-stats strong{font-size:28px}
+  .graph-stats small{display:inline;font-size:11px;margin-left:6px}
+  .graph-toolbar{align-items:stretch;gap:16px}
+  .segment{display:flex}
+  .segment button{flex:1;font-size:12px}
+  .search-box{width:100%}
+  .search-box input{width:100%}
+  .component-content{padding:4px 12px 16px}
+  .flat-node{gap:8px}
+  .flat-node p{font-size:16px;line-height:1.9}
+  .node-index{flex-shrink:0}
+  .edge-thought{gap:6px}
+  .edge-body{padding:12px}
+  .edge-body p{font-size:14px;line-height:1.9}
+  .settings-card{padding:18px 16px}
+  .settings-preview .paragraph-card{padding:12px;height:120px}
+  .settings-card .theme-picker{width:100%;justify-content:space-between}
+  .settings-card .backup-actions>*{flex:1}
+  .toast{bottom:calc(18px + env(safe-area-inset-bottom))}
+}

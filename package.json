@@ -1,9 +1,14 @@
 {
   "name": "pairsentence",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "license": "MIT",
   "repository": "https://github.com/mnyon/pairsentence",
   "private": true,
   "type": "module",
-  "scripts": { "start": "node server.mjs", "build": "node build.mjs && node plugin/build.mjs", "build:plugin": "node plugin/build.mjs", "test": "node --test" }
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node build.mjs && node plugin/build.mjs",
+    "build:plugin": "node plugin/build.mjs",
+    "test": "node --test"
+  }
 }

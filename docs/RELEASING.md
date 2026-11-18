@@ -12,7 +12,7 @@
 
 1. 同步修改 package.json 与 plugin/plugin.json 的版本，更新版本说明。
 2. 执行 npm test 和 npm run build:plugin。安装包根目录须直接包含 plugin.json、index.js、icon.png 和 README，而非再嵌套一层目录。
-3. 提交并推送 main，再创建与清单一致的标签，例如 v0.1.9。
+3. 提交并推送 main，再创建与清单一致的标签，例如 v0.1.10。
 4. 推送标签后，Release 工作流会运行检查、构建，并创建附带 package.zip 的 GitHub Release 草稿。
 5. 检查草稿、补充说明及完成设备验收后，手动发布为正式 Release。集市读取正式版本，草稿或预发布不满足收录条件。
 
@@ -30,7 +30,7 @@ Fork siyuan-note/bazaar，在 main 分支的 plugins.txt 末尾新增一行：
 
     mnyon/pairsentence
 
-向官方 main 提交 PR，使用官方当时提供的 PR 模板完成声明。可用标题：Add plugin: PairSentence（间）。简介：让思源笔记片段彼此照见，建立关联、记录思考，并以阅读视图或星图回顾；图谱随工作空间同步。
+向官方 main 提交 PR，使用官方当时提供的 PR 模板完成声明。可用标题：Add plugin: PairSentence。简介：让思源笔记片段彼此照见，建立关联、记录思考，并以阅读视图或星图回顾；图谱随工作空间同步。
 
 收录后，通常只需更新版本、正式 Release 和 package.zip，无需每次重复申请收录。
 
