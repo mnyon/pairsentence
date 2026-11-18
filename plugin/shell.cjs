@@ -93,6 +93,7 @@ module.exports = class PairSentencePlugin extends Plugin {
     const close=document.createElement('button');close.className='ps-close';close.textContent='×';close.title='返回思源';close.setAttribute('aria-label','收起 PairSentence，返回思源');
     close.onclick=()=>this.close();if(this.isMobile)root.append(close);shadow.append(style,root);(parent||document.body).append(host);
     this.host=host;this.root=root;
+    const cleanupMobileInputs=this.isMobile?bindMobileInputs(root):()=>{};
     host.addEventListener('cancel',e=>{e.preventDefault();this.close();});
     root.querySelector('.brand').onclick=e=>e.preventDefault();
     root.addEventListener('click',event=>{
@@ -111,7 +112,7 @@ module.exports = class PairSentencePlugin extends Plugin {
       const snapshot={...this.preferences};
       this.preferenceQueue=this.preferenceQueue.then(()=>{if(!this.disposed)return this.adapter.save('preferences',snapshot);}).catch(e=>showMessage(`偏好保存失败：${e.message}`));
     },removeItem:key=>{delete this.preferences[key];}};
-    this.cleanup=()=>{for(const [type,fn] of listeners)window.removeEventListener(type,fn);intervals.forEach(clearInterval);timeouts.forEach(clearTimeout);root.getAnimations({subtree:true}).forEach(a=>a.cancel());host.remove();};
+    this.cleanup=()=>{cleanupMobileInputs();for(const [type,fn] of listeners)window.removeEventListener(type,fn);intervals.forEach(clearInterval);timeouts.forEach(clearTimeout);root.getAnimations({subtree:true}).forEach(a=>a.cancel());host.remove();};
     this.lifecycle=startPairSentence(scopedDocument,scopedWindow,storage,(fn,ms)=>{const id=setInterval(()=>{if(this.isVisible()&&!this.pendingData&&!this.disposed)fn();},ms);intervals.push(id);return id;},(fn,ms)=>{const id=setTimeout(()=>{if(!this.disposed)fn();},ms);timeouts.push(id);return id;},this.adapter);
   }
   isVisible(){return !!this.host?.isConnected&&(this.isMobile?this.host.open:this.host.getClientRects().length>0);}

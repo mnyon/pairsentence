@@ -115,7 +115,7 @@ export function buildPlugin() {
   css+='\n'+read('plugin/settings.css')+'\n'+read('plugin/mobile.css');
   const injected=`const standalone=false,userscript=false;const request=(...args)=>adapter.request(...args);\n${core}\n${app}`;
   const icon='data:image/png;base64,'+fs.readFileSync(path.join(root,'plugin/icon.png')).toString('base64');
-  return `const PLUGIN_ICON=${JSON.stringify(icon)};\nconst PLUGIN_CSS=${JSON.stringify(css)};\nconst PLUGIN_HTML=${JSON.stringify(html)};\n`+read('plugin/shell.cjs').replace('/* PAIRSENTENCE_APP */',injected).replace('/* PAIRSENTENCE_ADAPTER */',plain(read('plugin/adapter.js')));
+  return `const PLUGIN_ICON=${JSON.stringify(icon)};\nconst PLUGIN_CSS=${JSON.stringify(css)};\nconst PLUGIN_HTML=${JSON.stringify(html)};\n`+read('plugin/shell.cjs').replace('/* PAIRSENTENCE_APP */',injected).replace('/* PAIRSENTENCE_ADAPTER */',plain(read('plugin/adapter.js'))+'\n'+plain(read('plugin/mobile-input.js')));
 }
 // A dependency-free ZIP writer (stored entries, UTF-8 names).
 export function zipFiles(files) {
