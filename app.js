@@ -160,7 +160,7 @@ function switchView(next) {
 function graphGroups() { const connectedIds = new Set(activeEdges(state).flatMap(e => [e.a, e.b])); return components(state).filter(g => g.some(id => connectedIds.has(id))); }
 function graphNode(n, i) { return `<div class="flat-node"><span class="node-index">${String(i + 1).padStart(2,'0')}</span><div><div class="flat-source">${esc(title(n))} <span>· ${date(n.updated)}</span></div><p>${esc(n.content)}</p>${jump(n, '回到这个段落')}</div></div>`; }
 function thoughtCard(e) {
-  return `<div class="edge-thought" data-edge="${esc(e.id)}"><div class="edge-thread">⌁</div><div class="edge-body"><div class="edge-meta"><span>片段 ${esc(title(state.nodes[e.a]))} <b>↔</b> ${esc(title(state.nodes[e.b]))}</span><button class="edit-edge" data-id="${esc(e.id)}" title="编辑思考">编辑</button><button class="delete-edge" data-id="${esc(e.id)}" title="移除关联">移除</button></div><p>${e.thought ? esc(e.thought) : '<span class="no-thought">两个片段在这里相遇。点击编辑，补上一句思考。</span>'}</p></div></div>`;
+  return `<div class="edge-thought" data-edge="${esc(e.id)}"><div class="edge-thread">⌁</div><div class="edge-body"><div class="edge-meta"><span>片段 ${esc(title(state.nodes[e.a]))} <b>↔</b> ${esc(title(state.nodes[e.b]))}</span><button class="edit-edge" data-id="${esc(e.id)}" title="编辑思考">编辑</button><button class="delete-edge" data-id="${esc(e.id)}" title="移除关联及其思考批注">移除关联</button></div><p>${e.thought ? esc(e.thought) : '<span class="no-thought">两个片段在这里相遇。点击编辑，补上一句思考。</span>'}</p></div></div>`;
 }
 function constellation(groups, edges) {
   const width = 1000, height = Math.max(480, Math.ceil(groups.length / 3) * 300);
@@ -205,7 +205,7 @@ function drawGraph() {
   });
   document.querySelectorAll('.delete-edge').forEach(button => button.onclick = async () => {
     if(busy || syncing)return;
-    if (button.dataset.confirm !== 'yes') { button.dataset.confirm = 'yes'; button.textContent = '确认移除？'; return; }
+    if (button.dataset.confirm !== 'yes') { button.dataset.confirm = 'yes'; button.textContent = '确认断开关联？'; return; }
     busy=true;button.disabled=true;
     try{await application.removeLink(button.dataset.id);updateReadModel();undo=null;drawGraph();toast('关联已移除，脉络已重新计算');}
     catch(error){reportFailure(error);}

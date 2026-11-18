@@ -12,7 +12,7 @@
 
 1. 同步修改 package.json 与 plugin/plugin.json 的版本，更新版本说明。
 2. 执行 npm test 和 npm run build:plugin。安装包根目录须直接包含 plugin.json、index.js、icon.png 和 README，而非再嵌套一层目录。
-3. 提交并推送 main，再创建与清单一致的标签，例如 v0.1.12。
+3. 提交并推送 main，再创建与清单一致的标签，例如 v0.1.13。
 4. 推送标签后，Release 工作流会运行检查、构建，并创建附带 package.zip 的 GitHub Release 草稿。
 5. 检查草稿、补充说明及完成设备验收后，手动发布为正式 Release。集市读取正式版本，草稿或预发布不满足收录条件。
 
