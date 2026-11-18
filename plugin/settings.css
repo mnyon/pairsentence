@@ -1,0 +1,27 @@
+.settings-view{max-width:1060px}
+.decision-panel .decision-actions{justify-content:flex-end;margin-top:18px;gap:14px}
+.decision-panel #skip-button{border:1px solid var(--line);border-radius:8px;padding:13px 22px;color:var(--ink);font-size:12px}
+.decision-panel #skip-button:hover{background:var(--soft,var(--paper))}
+.link-dialog-actions{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:20px}
+#thought-dialog{width:560px}
+#thought-dialog h2{font-size:23px}
+.ps-root[data-theme=night] #thought-dialog p{color:var(--subtle)}
+.settings-card{padding:26px 30px;margin-bottom:22px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink)}
+.settings-card h2{font-size:17px;font-weight:500;margin:0 0 12px}
+.settings-card p{font-size:12px;line-height:1.9;color:var(--muted)}
+.settings-card .motion-toolbar{margin:22px 0 18px;flex-wrap:wrap;gap:12px}
+.settings-card .motion-options{flex-wrap:wrap;border-radius:12px}
+.settings-card .backup-section{border:0;margin:0;padding:0}
+.settings-card .backup-section h3{margin:0 0 12px;font-size:17px}
+.settings-card .theme-picker select{font-size:12px;padding:7px 12px}
+.settings-preview{gap:20px;max-width:680px;min-height:0;margin:22px auto 0}
+.settings-preview .paragraph-card{height:145px;min-height:0;padding:20px;box-shadow:none}
+.settings-preview .paragraph-card p{font-family:var(--serif);font-size:16px;color:var(--ink);margin:20px 0 0}
+.settings-card .quiet-button{color:var(--ink);border-color:var(--line)}
+.ps-root[data-theme=night] .settings-card p{color:var(--subtle)}
+.ps-root[data-theme=night] .motion-toolbar,.ps-root[data-theme=night] .theme-picker,.ps-root[data-theme=night] .motion-toolbar>button,.ps-root[data-theme=night] .motion-options button{color:var(--subtle)}
+.ps-root[data-theme=night] .motion-options{border-color:var(--line)}
+.ps-root[data-theme=night] .nav-item.active{background:var(--soft);color:var(--ink)}
+.ps-root[data-theme=night] #import-confirmation{background:var(--soft)}
+@media(max-width:760px){.settings-card{padding:20px}.settings-card .motion-toolbar>span:first-child{display:block}.settings-card .theme-picker{margin-left:0}.settings-preview .paragraph-card{height:130px;padding:15px}.settings-preview .paragraph-card p{font-size:14px}.settings-card .motion-options button{font-size:11px;padding:8px 10px}}
+@media(max-width:600px){.settings-preview{grid-template-columns:1fr 1fr;gap:12px}.settings-card .motion-toolbar>button{margin-left:0}}

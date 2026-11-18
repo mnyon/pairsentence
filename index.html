@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>间 · PairSentence</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="间，首页"><span class="brand-mark">间</span><span>PairSentence<small>让想法，彼此照见。</small></span></a>
+    <div class="nav-label">你的思考空间</div>
+    <nav><button class="nav-item active" data-view="pair"><span>⌘</span>发现关联<span class="nav-dot"></span></button><button class="nav-item" data-view="graph"><span>⌁</span>思考图谱<span class="count" id="nav-count">0</span></button></nav>
+    <div class="sidebar-note"><span class="tiny-orbit">✳</span><p>一个想法，<br>可能是另一个想法的回声。</p><span class="note-line"></span></div>
+    <div class="connection"><span id="connection-dot" class="status-dot"></span><div id="connection-text">正在连接思源<small>本地笔记 · 本地保存</small></div><button id="sync-button" class="icon-button" title="同步思源内容" aria-label="同步思源内容">↻</button></div>
+  </aside>
+  <main>
+    <header class="topbar"><div class="breadcrumb"><button id="focus-button" class="icon-button" aria-label="收起侧栏，进入专注模式" aria-expanded="true" title="专注模式">☰</button><span class="workspace-label">工作台</span> <span>/</span> <strong id="page-name">发现关联</strong><button id="focus-graph" class="focus-shortcut" hidden>思考图谱 ↗</button></div><div class="top-actions"><span id="save-status">本地思考空间</span><button id="settings-button" class="icon-button" aria-label="连接与备份" title="连接与备份">⚙</button><button id="about-button" class="icon-button" aria-label="如何开始探索" title="如何开始探索">ⓘ</button></div></header>
+    <section id="pair-view" class="view">
+      <div class="page-heading"><div><div class="eyebrow"><span></span> THE SPACE BETWEEN IDEAS</div><h1>关联，始于一次相遇<span>。</span></h1><p>两个来自笔记的片段。在它们之间，你看到了什么？</p></div></div>
+      <div class="session-bar"><div><span class="live-dot"></span><span id="pair-mode">正在打捞片段</span></div><div>本次已探索 <strong id="session-count">00</strong> 组<span class="divider">/</span>建立 <strong id="session-links">00</strong> 条关联</div></div>
+      <div class="motion-toolbar"><span>相遇的仪式</span><div class="motion-options" role="group" aria-label="关联动画风格"><button data-motion="resonance" aria-pressed="true">◎ 共振</button><button data-motion="sparks" aria-pressed="false">✦ 星火</button><button data-motion="bloom" aria-pressed="false">❧ 生长</button><button data-motion="none" aria-pressed="false">· 静谧</button></div><label class="theme-picker">配色 <select id="theme-select" aria-label="界面配色"><option value="forest">青苔</option><option value="sand">暖砂</option><option value="ocean">雾蓝</option><option value="night">夜读</option></select></label><button id="preview-motion" title="仅预览动画，不会建立关系">预览 ↗</button><span id="motion-announcement" class="sr-only" role="status"></span></div>
+      <div id="pair-stage" class="pair-stage"><div class="loading-state"><span class="spinner"></span><h3>让两个想法相遇</h3><p>正在从思源笔记中打捞片段…</p></div></div>
+      <div id="decision-panel" class="decision-panel" hidden>
+        <div class="thought-label"><label for="thought">为这次关联，留下一句思考</label><span>选填 · 也可以先连接，再补充</span></div>
+        <div class="thought-box"><span>↳</span><textarea id="thought" maxlength="3000" rows="2" placeholder="它们让我想到……"></textarea><span class="thought-spark">✧</span></div>
+        <div class="decision-actions"><button id="skip-button" class="skip-button">先跳过 <span>→</span></button><div class="main-decisions"><button id="reject-button" class="secondary-button"><span>×</span>暂未发现关联</button><button id="link-button" class="primary-button"><span>⌁</span>建立关联 <kbd>Ctrl ↵</kbd></button></div></div>
+      </div>
+      <div class="bottom-note"><span>✦</span> 不必寻找标准答案。你的联想，就是连接的意义。<button id="undo-button" hidden>撤销上一步</button></div>
+    </section>
+    <section id="graph-view" class="view" hidden>
+      <div class="page-heading"><div><div class="eyebrow"><span></span> A CONSTELLATION OF THOUGHTS</div><h1>让零散，长成脉络<span>。</span></h1><p>每一条关联，都是你曾经走过的一小段思考。</p></div><button id="export-button" class="quiet-button">↓ 导出图谱</button></div>
+      <div id="graph-stats" class="graph-stats"></div>
+      <div class="graph-toolbar"><div class="segment"><button data-graph-tab="flat" class="selected">平铺阅读</button><button data-graph-tab="map">星图概览</button></div><label class="search-box"><span>⌕</span><input id="graph-search" placeholder="搜索片段或思考…" aria-label="搜索片段或思考"></label></div>
+      <div id="graph-content"></div>
+    </section>
+    <footer><span>间 <span class="footer-cross">×</span> 思源笔记</span><span>CONNECT THE UNEXPECTED</span></footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+<dialog id="settings-dialog"><button class="settings-close dialog-close icon-button" aria-label="关闭连接设置">×</button><div class="eyebrow">KEEP IT SIMPLE, KEEP IT YOURS</div><h2>连接你的思考空间。</h2><p id="storage-description"></p><form id="connection-form"><div id="source-list"></div><button id="add-source" type="button" class="quiet-button">＋ 添加思源来源</button><p class="settings-help">所有来源共用一张图谱；来源离线不会删除旧关系。Token 仅保存在本机，不进入图谱备份。更换实例端口时请编辑原来源地址。</p><button id="connect-button" type="submit" class="primary-button">保存来源并连接 ↗</button></form><p id="settings-result" role="status"></p><div class="backup-section"><h3>带走你的思考</h3><p>图谱可导出为 JSON；换浏览器或移动独立文件前，先保存一份备份。导入会替换当前图谱。</p><div class="backup-actions"><button id="settings-export" class="quiet-button">↓ 导出备份</button><button id="import-button" class="quiet-button">↑ 导入备份</button><a class="quiet-button" id="download-standalone" href="/PairSentence.html" download="PairSentence.html">↓ 下载独立单文件</a></div><input type="file" id="import-file" accept=".json,application/json" hidden><div id="import-confirmation" hidden><p id="import-summary"></p><button id="confirm-import" class="primary-button">确认替换当前图谱</button><button id="cancel-import" class="quiet-button">取消</button></div></div></dialog>
+<dialog id="about-dialog"><button class="dialog-close icon-button" aria-label="关闭">×</button><div class="eyebrow">A LITTLE ABOUT DISCOVERY</div><h2>让连接慢慢发生。</h2><p>两段旧笔记，偶然坐到了一起。读一读：它们让你想起了什么？</p><p>也许是同一种困惑，也许是意外的呼应。有了联想，就「建立关联」，也可以留下一句思考。</p><p>没有共鸣，就选「暂未发现关联」；想留待以后，就「先跳过」。不必为每次相遇找到答案。</p><p>等你回到「思考图谱」，这些小小的连接，会成为自己的思路。</p><button class="primary-button dialog-done">继续探索 ↗</button></dialog>
+<script type="module" src="/app.js"></script>
+</body></html>

@@ -1,0 +1,9 @@
+data/
+*.log
+artifacts/
+sample.js
+node_modules/
+.env
+.env.*
+*.local
+dist/
