@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createApplication} from './application.js';
 import {newState, mergeBlocks} from './engine.js';
-import {validateState} from './io.js';
+import {validateState} from './validation.js';
 
 function fixture() {
   let disk=newState(), fail=false, gate=null, calls=0;
@@ -81,13 +81,4 @@ test('unverified cached fragments can create a saved relationship while all sour
   const app=createApplication({validate:validateState,repository:{load:async()=>state,save:async s=>saved=s},fragments:{lookup:async()=>({blocks:[],checkedIds:[]})}});
   await app.load();const p=app.selectNextPair();const result=await app.submitJudgment({pairId:p.pairId,action:'link',thought:'即使离线也保留思考'});
   assert.equal(result.usedSnapshot,true);assert.equal(saved.edges.length,1);assert.equal(saved.nodes.a.deleted,false);assert.equal(saved.nodes.a.content,'离线正文甲');
-});
-test('source cleanup is atomic, retains shared and unknown fragments, removes dangling history',async()=>{
-  const s=newState();mergeBlocks(s,[{id:'a',content:'独有',sourceUrls:['one']},{id:'b',content:'共享',sourceUrls:['one','two']},{id:'c',content:'旧节点未知来源'}]);
-  s.edges=[{id:'edge1',a:'a',b:'b',thought:'要清理',created:1},{id:'edge2',a:'b',b:'c',thought:'要保留',created:2}];s.history['a|b']={action:'link',until:999};
-  let fail=true,saved;
-  const app=createApplication({validate:validateState,repository:{load:async()=>s,save:async d=>{if(fail)throw new Error('save failed');saved=d;}},fragments:{}});
-  await app.load();assert.deepEqual(app.sourceImpact('one'),{fragments:1,links:1,thoughts:1});
-  await assert.rejects(app.cleanSource('one'));assert.deepEqual(app.snapshot(),s);
-  fail=false;await app.cleanSource('one');assert.equal(saved.nodes.a,undefined);assert.ok(saved.nodes.b&&saved.nodes.c);assert.deepEqual(saved.nodes.b.sourceUrls,['two']);assert.equal(saved.edges.length,1);assert.equal(saved.edges[0].thought,'要保留');assert.deepEqual(saved.history,{});
 });

@@ -110,20 +110,6 @@ export function createApplication({ repository, fragments, validate, now = Date.
       if(!draft.edges.some(e=>e.id===id))throw new Error('关联已不存在');
       draft.edges=draft.edges.filter(e=>e.id!==id); await commit(draft); undoRecord=null;
     }),
-    sourceImpact(url) {
-      const ids=new Set(Object.values(graph.nodes).filter(n=>n.sourceUrls?.length===1&&n.sourceUrls[0]===url).map(n=>n.id));
-      const edges=graph.edges.filter(e=>ids.has(e.a)||ids.has(e.b));
-      return {fragments:ids.size,links:edges.length,thoughts:edges.filter(e=>e.thought.trim()).length};
-    },
-    cleanSource: url => serial(async()=>{
-      const draft=copy(graph);
-      const ids=new Set(Object.values(draft.nodes).filter(n=>n.sourceUrls?.length===1&&n.sourceUrls[0]===url).map(n=>n.id));
-      draft.edges=draft.edges.filter(e=>!ids.has(e.a)&&!ids.has(e.b));
-      for(const id of ids)delete draft.nodes[id];
-      for(const node of Object.values(draft.nodes))if(node.sourceUrls)node.sourceUrls=node.sourceUrls.filter(s=>s!==url);
-      for(const key of Object.keys(draft.history))if(key.split('|').some(id=>ids.has(id)))delete draft.history[key];
-      await commit(draft);undoRecord=null;ticket=null;
-    }),
     importGraph: value => serial(async () => {
       const draft=copy(validate(value)); draft.stats ||= {decisions:0};
       await commit(draft); undoRecord=null; ticket=null;

@@ -1,39 +1,48 @@
-# 发布与插件集市收录
+# 首次上架与后续更新
 
-公开仓库：https://github.com/mnyon/pairsentence
+插件仓库：https://github.com/mnyon/pairsentence
+官方集市：https://github.com/siyuan-note/bazaar
 
-## 发布前验收
+## 首次发布
 
-在真实思源中确认：右侧 🌱 一次点击打开普通页签、不展开右侧面板；重复点击回到已有页签；其他侧栏入口正常。手机端打开、建立关联、取消及保存思考、图谱编辑、JSON 导入导出均正常。配色与动效可用。
+1. 在真实桌面和手机端确认阅读、建立关联、输入法、编辑、移除关联、JSON 备份、笔记跳转均正常。两设备按顺序同步，确认图谱与偏好保留。
+2. `package.json` 与 `plugin/plugin.json` 的版本必须相同。当前版本为 `0.1.14`。
+3. 运行 `npm test` 和 `npm run build`，提交并推送源文件。
+4. 在项目目录创建并推送对应标签：
 
-两设备依次同步，确认图谱与偏好保留。验证保存失败不会丢失当前输入；备份后验证普通卸载、重新安装可恢复数据。当前自动化测试覆盖宿主模拟和存储逻辑，不能替代以上设备验收。
+   ```powershell
+   git tag v0.1.14
+   git push origin v0.1.14
+   ```
 
-## 创建版本
+5. 打开 GitHub 的 Actions，等待 Release 工作流成功。它会生成安装包并创建 Release 草稿。
+6. 打开 Releases，编辑对应草稿。确认版本标签正确、附件名为 `package.zip`，补充功能简介和更新说明。完成实机验收后点击 **Publish release**，不勾选预发布。
 
-1. 同步修改 package.json 与 plugin/plugin.json 的版本，更新版本说明。
-2. 执行 npm test 和 npm run build:plugin。安装包根目录须直接包含 plugin.json、index.js、icon.png 和 README，而非再嵌套一层目录。
-3. 提交并推送 main，再创建与清单一致的标签，例如 v0.1.13。
-4. 推送标签后，Release 工作流会运行检查、构建，并创建附带 package.zip 的 GitHub Release 草稿。
-5. 检查草稿、补充说明及完成设备验收后，手动发布为正式 Release。集市读取正式版本，草稿或预发布不满足收录条件。
+请使用工作流生成的草稿发布，避免另建同名 Release。正式版本是集市检查的前提；草稿和预发布不会作为正式上架包。构建包根目录直接包含 plugin.json、index.js、icon.png、README 和许可文件，不再嵌套一层目录。
 
-本次准备不创建标签、不发布正式版本，也不发送集市 PR。
+## 首次申请集市收录
 
-## 首次收录
+此操作在独立目录或 GitHub 网页中完成，不把集市仓库放进插件项目。
 
-以官方最新要求为准：
-https://github.com/siyuan-note/bazaar
-https://github.com/siyuan-note/plugin-sample
+1. 确认插件仓库公开，并已有带 `package.zip` 的正式 Latest Release。
+2. Fork `siyuan-note/bazaar`。本地操作时，单独克隆 Fork，例如放在 `G:\development\PairSentence-marketplace`。
+3. 从官方最新 main 建立 add-plugin-pairsentence 分支，在 plugins.txt 末尾仅新增一行 `mnyon/pairsentence`，不要重复添加或修改无关条目。
+4. 提交并推送该分支，向 `siyuan-note/bazaar` 的 main 创建 Pull Request。可用标题：**Add mnyon/pairsentence**。
+5. 按官方最新 PR 模板确认：无侵权内容；作者同意集市展示说明、缓存与分发安装包；代码与图标许可允许再分发。本项目代码为 MIT，Twemoji 图标为 CC BY 4.0，安装包附带许可与署名。开源插件不适用闭源源码审核条款。
+6. 等待自动检查和维护者审核。失败时在同一个 PR 中修正，不重复提交申请。合并且集市索引更新后，重启思源刷新集市列表。
 
-仓库名、清单 name 和安装目录均为 pairsentence。正式 Release 的版本须与清单一致，附件须命名 package.zip。作者须有权分发代码和图标。
+后续官方要求可能调整，以 bazaar 的 README 和 PR 模板为准。
 
-Fork siyuan-note/bazaar，在 main 分支的 plugins.txt 末尾新增一行：
+## 后续更新
 
-    mnyon/pairsentence
+每次更新同步提升两处版本，测试、构建、提交和推送。再创建新的匹配标签，等待新的 Release 草稿，确认附件后发布正式版本。不要覆盖已发布标签或安装包；发现错误时使用更高的新版本修复。
 
-向官方 main 提交 PR，使用官方当时提供的 PR 模板完成声明。可用标题：Add plugin: PairSentence。简介：让思源笔记片段彼此照见，建立关联、记录思考，并以阅读视图或星图回顾；图谱随工作空间同步。
+首次收录后，通常无需再向 bazaar 发 PR。集市会自动拉取新的正式版本。若长时间没有更新，检查 Release 附件、版本号及 bazaar 的 Stage 工作流或 stage-fail Issue。
 
-收录后，通常只需更新版本、正式 Release 和 package.zip，无需每次重复申请收录。
+## 常见问题
 
-## 文件与许可
-
-构建包包含 MIT LICENSE、Twemoji 图标的 CC BY 4.0 许可及署名。源码库排除本机参考脚本、连接凭据、笔记数据和生成文件。GitHub 的 Checks 工作流在推送及 PR 时运行测试和插件构建，并保存安装包为构建产物。
+- **看不到 Release 草稿**：确认已推送标签，去 Actions 检查 Release 工作流；失败后修复或重跑。
+- **草稿缺少 package.zip**：不要先发布，先修复构建或附件上传。
+- **上架检查失败**：查看同一个 PR 下的检查说明，修正插件仓库的正式 Release，等待复检。
+- **发布前撤回**：保留草稿即可，尚未正式发布。正式发布后用更高版本修复。
+- **本地数据和生成文件**：不提交笔记、连接凭据、dist 或临时预览。只有 package.zip 作为 Release 附件分发。

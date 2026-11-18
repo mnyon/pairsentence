@@ -2,7 +2,7 @@
   "name": "pairsentence",
   "author": "mnyon",
   "url": "https://github.com/mnyon/pairsentence",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "icon": "icon.png",
   "minAppVersion": "3.8.5",
   "backends": [

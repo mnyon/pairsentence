@@ -1,0 +1,32 @@
+<div class="shell">
+
+  <main>
+    <header class="topbar"><div class="workspace-navigation"><a class="brand" href="/" aria-label="PairSentence，首页"><span class="brand-mark">🌱</span><span>PairSentence</span></a><nav aria-label="思考视图"><button class="nav-item active" data-view="pair"><span>⌘</span>发现关联<span class="nav-dot"></span></button><button class="nav-item" data-view="graph"><span>⌁</span>思考图谱<span class="count" id="nav-count">0</span></button><button class="nav-item" data-view="settings"><span>⚙</span>设置</button></nav></div><div class="top-actions"><span id="save-status">本地思考空间</span><button id="about-button" class="icon-button" aria-label="如何开始探索" title="如何开始探索">ⓘ</button></div></header>
+    <section id="pair-view" class="view">
+      <div class="page-heading"><div><div class="eyebrow"><span></span> THE SPACE BETWEEN IDEAS</div><h1>关联，始于一次相遇<span>。</span></h1><p>两个来自笔记的片段。在它们之间，你看到了什么？</p></div></div>
+      <div class="session-bar"><div><span class="live-dot"></span><span id="pair-mode">正在打捞片段</span></div><div>本次已探索 <strong id="session-count">00</strong> 组<span class="divider">/</span>建立 <strong id="session-links">00</strong> 条关联</div></div>
+
+      <div id="pair-stage" class="pair-stage"><div class="loading-state"><span class="spinner"></span><h3>让两个想法相遇</h3><p>正在从思源笔记中打捞片段…</p></div></div>
+      <div id="decision-panel" class="decision-panel" hidden>
+        <div class="decision-actions"><button id="skip-button" class="skip-button">换一组 <span>→</span></button><div class="main-decisions"><button id="link-button" class="primary-button"><span>⌁</span>建立关联 <kbd>Ctrl ↵</kbd></button></div></div>
+      </div>
+      <div class="bottom-note"><button id="undo-button" hidden>撤销上一步</button></div>
+    </section>
+    <section id="graph-view" class="view" hidden>
+      <div class="page-heading"><div><div class="eyebrow"><span></span> A CONSTELLATION OF THOUGHTS</div><h1>让零散，长成脉络<span>。</span></h1><p>每一条关联，都是你曾经走过的一小段思考。</p></div></div>
+      <div id="graph-stats" class="graph-stats"></div>
+      <div class="graph-toolbar"><div class="segment"><button data-graph-tab="flat" class="selected">平铺阅读</button><button data-graph-tab="map">星图概览</button></div><label class="search-box"><span>⌕</span><input id="graph-search" placeholder="搜索片段或思考…" aria-label="搜索片段或思考"></label></div>
+      <div id="graph-content"></div>
+    </section>
+
+  <section id="settings-view" class="view settings-view" hidden>
+    <div class="page-heading"><div><div class="eyebrow">MAKE IT YOURS</div><h1>设置<span>。</span></h1><p>选一种配色，留一点仪式感。</p></div></div>
+    <section class="settings-card"><h2>外观与动效</h2><p>默认跟随思源的亮暗模式，也可以选择喜欢的配色。动效只作反馈，不影响关联判断。</p><div class="motion-toolbar"><span>相遇的仪式</span><div class="motion-options" role="group" aria-label="关联动画风格"><button data-motion="resonance" aria-pressed="true">◎ 共振</button><button data-motion="sparks" aria-pressed="false">✦ 星火</button><button data-motion="bloom" aria-pressed="false">❧ 生长</button><button data-motion="flip" aria-pressed="false">▱ 翻页</button><button data-motion="none" aria-pressed="false">· 静谧</button></div><label class="theme-picker">配色 <select id="theme-select" aria-label="界面配色"><option value="auto">跟随思源</option><option value="forest">青苔</option><option value="sand">暖砂</option><option value="ocean">雾蓝</option><option value="night">夜读</option></select></label><button id="preview-motion" title="仅预览动画，不会建立关系">预览 ↗</button><span id="motion-announcement" class="sr-only" role="status"></span></div>
+    <div id="settings-preview" class="pair-stage settings-preview" aria-label="动画预览"><article class="paragraph-card"><span class="fragment-number">片段 A</span><p>一个念头，</p></article><article class="paragraph-card"><span class="fragment-number">片段 B</span><p>与另一个念头相遇。</p></article></div></section>
+    <section class="settings-card"><div class="backup-section"><h3>数据与备份</h3><p>导入 JSON 备份会替换当前图谱，建议先导出备份。若片段不在当前工作空间中，对应关联将暂不可用，思考记录仍会保留。</p><div class="backup-actions"><button id="settings-export" class="quiet-button">↓ 导出备份</button><button id="import-button" class="quiet-button">↑ 导入备份</button></div><input type="file" id="import-file" accept=".json,application/json" hidden><div id="import-confirmation" hidden><p id="import-summary"></p><button id="confirm-import" class="primary-button">确认替换当前图谱</button><button id="cancel-import" class="quiet-button">取消</button></div></div><p class="uninstall-note">普通卸载会保留图谱、思考和设置，在同一工作空间重新安装后可继续使用。手动删除插件数据目录会丢失这些记录，建议卸载前先导出备份。思源笔记原文不受影响。</p></section>
+    </section></main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+
+<dialog id="about-dialog"><button class="dialog-close icon-button" aria-label="关闭">×</button><div class="eyebrow">A LITTLE ABOUT DISCOVERY</div><h2>让连接慢慢发生。</h2><p>两段旧笔记，偶然坐到了一起。读一读：它们让你想起了什么？</p><p>也许是同一种困惑，也许是意外的呼应。有了联想，就「建立关联」，也可以留下一句思考。</p><p>暂时没有共鸣，就「换一组」。不必为每次相遇找到答案。</p><p>等你回到「思考图谱」，这些小小的连接，会成为自己的思路。</p><button class="primary-button dialog-done">继续探索 ↗</button></dialog>
+<dialog id="thought-dialog" aria-labelledby="thought-heading"><button class="dialog-close icon-button" aria-label="返回阅读">×</button><h2 id="thought-heading">是什么，让它们相遇？</h2><p>可以留下一句思考，也可以直接保存关联。</p><div class="thought-box"><textarea id="thought" maxlength="3000" rows="3" aria-label="选填的关联思考" placeholder="它们让我想到……"></textarea></div><div class="link-dialog-actions"><button class="quiet-button dialog-done">再读一读</button><button id="confirm-link" class="primary-button">保存关联 ↗</button></div></dialog>

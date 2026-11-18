@@ -145,8 +145,6 @@ module.exports = class PairSentencePlugin extends Plugin {
   }
 };
 
-function startPairSentence(document,window,localStorage,setInterval,setTimeout,adapter) {
-/* PAIRSENTENCE_APP */
-}
+/* PAIRSENTENCE_VIEW */
 
 /* PAIRSENTENCE_ADAPTER */
