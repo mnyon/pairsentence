@@ -20,6 +20,7 @@ module.exports = class PairSentencePlugin extends Plugin {
     this.preferenceQueue=Promise.resolve();
     this.addIcons(`<symbol id="iconPairSentence" viewBox="0 0 160 160"><image href="${PLUGIN_ICON}" width="160" height="160"/></symbol>`);
     this.isMobile=['mobile','browser-mobile'].includes(getFrontend());
+    this.adapter.isMobile=this.isMobile;
     if(!this.isMobile){
       const plugin=this;
       // The dock API creates an entry plus a panel. Capture our entry before the
@@ -86,6 +87,9 @@ module.exports = class PairSentencePlugin extends Plugin {
     const style=document.createElement('style');style.textContent=PLUGIN_CSS;
     const root=document.createElement('div');root.className='ps-root'+(this.isMobile?' ps-mobile':' ps-tab');root.tabIndex=-1;
     root.innerHTML=PLUGIN_HTML;
+    // Keep mobile thoughts in the reading flow so the source fragments remain
+    // available without dismissing a modal or a keyboard opening automatically.
+    if(this.isMobile)root.querySelector('#decision-panel').append(root.querySelector('#thought-dialog'));
     const close=document.createElement('button');close.className='ps-close';close.textContent='×';close.title='返回思源';close.setAttribute('aria-label','收起 PairSentence，返回思源');
     close.onclick=()=>this.close();if(this.isMobile)root.append(close);shadow.append(style,root);(parent||document.body).append(host);
     this.host=host;this.root=root;

@@ -10,7 +10,12 @@ export function buildPlugin() {
   app=app.replace('点击节点回到思源 · 悬停连线查看思考','点击节点回到思源');
   app=app.replace('间-思考图谱-','PairSentence-思考图谱-');
   app=app.replace('createApplication({','createApplication({gentle:true,');
-  app=app.replace("$('#link-button').onclick = () => perform('link'); $('#reject-button').onclick = () => perform('reject'); $('#skip-button').onclick = () => perform('skip');",`function beginLink(){if(busy||syncing||previewing||!pair)return;$('#thought-dialog').showModal();$('#thought').focus();}
+  app=app.replace("$('#link-button').onclick = () => perform('link'); $('#reject-button').onclick = () => perform('reject'); $('#skip-button').onclick = () => perform('skip');",`function beginLink(){
+    if(busy||syncing||previewing||!pair)return;
+    const editor=$('#thought-dialog');
+    if(adapter.isMobile){if(!editor.open)editor.show();document.body.focus({preventScroll:true});editor.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});}
+    else{if(!editor.open)editor.showModal();$('#thought').focus();}
+  }
   $('#link-button').onclick=beginLink;
   $('#skip-button').onclick=()=>perform('skip');
   $('#confirm-link').onclick=()=>perform('link');
