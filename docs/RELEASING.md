@@ -6,13 +6,13 @@
 ## 首次发布
 
 1. 在真实桌面和手机端确认阅读、建立关联、输入法、编辑、移除关联、JSON 备份、笔记跳转均正常。两设备按顺序同步，确认图谱与偏好保留。
-2. `package.json` 与 `plugin/plugin.json` 的版本必须相同。当前版本为 `0.1.14`。
+2. `package.json` 与 `plugin/plugin.json` 的版本必须相同。当前版本为 `0.1.15`。
 3. 运行 `npm test` 和 `npm run build`，提交并推送源文件。
 4. 在项目目录创建并推送对应标签：
 
    ```powershell
-   git tag v0.1.14
-   git push origin v0.1.14
+   git tag v0.1.15
+   git push origin v0.1.15
    ```
 
 5. 打开 GitHub 的 Actions，等待 Release 工作流成功。它会生成安装包并创建 Release 草稿。

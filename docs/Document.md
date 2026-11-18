@@ -2,7 +2,7 @@
 
 ## 安装与使用
 
-当前版本为 0.1.14，[集市收录申请](https://github.com/siyuan-note/bazaar/pull/2546)正在审核中。最低声明支持思源 3.8.5。
+当前版本为 0.1.15，[集市收录申请](https://github.com/siyuan-note/bazaar/pull/2546)正在审核中。最低声明支持思源 3.8.5。
 
 1. 从源码构建：安装 Node.js 22 或更新版本，执行 `npm run build`，无需安装依赖。
 2. 将生成的 `dist/pairsentence` 文件夹复制到工作空间的 `data/plugins/`，在思源中启用插件。

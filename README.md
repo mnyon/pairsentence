@@ -20,5 +20,4 @@
 </p>
 > 数据以JSON存储在`data/storage/petal/pairsentence/`。
 
-
 [安装、同步与备份说明](docs/Document.md) · [发布与更新指南](docs/RELEASING.md)
