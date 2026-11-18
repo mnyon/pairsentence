@@ -2,13 +2,32 @@
 
 让当前思源工作空间里的两个笔记片段相遇，建立关联，留下一句思考，再以平铺阅读或星图回顾。
 
+## 看看 PairSentence
+
+以下图片使用插件实际界面渲染，所有笔记、关联和思考均为虚构演示内容，不含私人数据。
+
+**让两段笔记相遇。** 读一读，换一组，或为它们建立关联。
+
+![桌面发现关联：两段关于阅读和植物的虚构笔记](https://raw.githubusercontent.com/mnyon/pairsentence/main/docs/images/discover.png)
+
+**让连接长成脉络。** 回顾片段与思考，逐渐看见自己的想法如何相连。
+
+![深色图谱阅读：虚构笔记之间的关联及思考记录](https://raw.githubusercontent.com/mnyon/pairsentence/main/docs/images/graph.png)
+
+**在手机上，也能慢慢读、轻轻记。** 两段原文上下排列，思考在页内展开，随时可以回看。
+
+<p>
+  <img src="https://raw.githubusercontent.com/mnyon/pairsentence/main/docs/images/mobile-reading.png" width="300" alt="手机窄屏布局：上下阅读两个演示片段">
+  <img src="https://raw.githubusercontent.com/mnyon/pairsentence/main/docs/images/mobile-thought.png" width="300" alt="手机窄屏布局：回看原文并在页内填写思考">
+</p>
+
 ## 安装
 
 1. 将 `dist/pairsentence` 整个文件夹复制到思源工作空间的 `data/plugins/` 下，最终应为 `data/plugins/pairsentence/plugin.json`。
 2. 在思源的插件集市「已下载」中启用插件；必要时重启思源。
 3. 桌面端点击默认位于右侧栏的 🌱 图标，在思源原生页签中打开，重复点击切回已有页签。手机端保留顶栏入口并打开全屏视图。无需地址或 API Token。
 
-本版本最低声明支持思源 3.8.5。移动端使用前，请确认插件文件已同步或安装，并在该设备启用插件。`package.zip` 是标准插件包，可供后续 Release 分发；尚未提交集市收录。
+本版本最低声明支持思源 3.8.5。移动端使用前，请确认插件文件已同步或安装，并在该设备启用插件。`package.zip` 是标准插件包，可供后续 Release 分发；集市收录申请正在审核中。
 
 ## 多设备同步
 
@@ -42,7 +61,7 @@
 
 在项目根目录执行 `npm run build:plugin`，无需安装构建依赖，输出 `dist/pairsentence/` 和 `dist/package.zip`。修改源文件后重新构建，不要编辑生成文件。
 
-当前为本地安装候选包，尚未收录集市。代码采用 MIT 许可，图标采用 Twemoji（CC BY 4.0，见 THIRD-PARTY-NOTICES.md）。正式发布前需完成真实桌面、手机及两设备同步验收，再创建正式 GitHub Release 并申请集市收录。公开源码：https://github.com/mnyon/pairsentence。
+当前为本地安装候选包，集市收录申请正在审核中。代码采用 MIT 许可，图标采用 Twemoji（CC BY 4.0，见 THIRD-PARTY-NOTICES.md）。正式发布前需完成真实桌面、手机及两设备同步验收，再创建正式 GitHub Release 并申请集市收录。公开源码：https://github.com/mnyon/pairsentence。
 
 
 ## 手机阅读
