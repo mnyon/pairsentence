@@ -1,13 +1,12 @@
 {
   "name": "pairsentence",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "license": "MIT",
   "repository": "https://github.com/mnyon/pairsentence",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node plugin/build.mjs",
-    "build:plugin": "node plugin/build.mjs",
-    "test": "node --test"
+    "test": "node --test test"
   }
 }

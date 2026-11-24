@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createApplication} from './application.js';
-import {newState, mergeBlocks} from './engine.js';
-import {validateState} from './validation.js';
+import {createApplication} from '../src/usecases/application.js';
+import {newState, mergeBlocks} from '../src/domain/engine.js';
+import {validateState} from '../src/domain/validation.js';
 
 function fixture() {
   let disk=newState(), fail=false, gate=null, calls=0;

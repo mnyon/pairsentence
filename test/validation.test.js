@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateState} from './validation.js';
-import {newState,mergeBlocks,decide} from './engine.js';
+import {validateState} from '../src/domain/validation.js';
+import {newState,mergeBlocks,decide} from '../src/domain/engine.js';
 
 test('backup accepts real graph round trips and rejects corrupt or unsafe references',()=>{
   const s=newState();mergeBlocks(s,[{id:'a',content:'甲'},{id:'b',content:'乙'}]);decide(s,{a:'a',b:'b'},'link','一句思考');

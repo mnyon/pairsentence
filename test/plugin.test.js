@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import {buildPlugin,zipFiles} from './plugin/build.mjs';
-import {createPluginAdapter} from './plugin/adapter.js';
-import {newState,mergeBlocks,decide} from './engine.js';
-import {createApplication} from './application.js';
-import {validateState} from './validation.js';
+import {buildPlugin,zipFiles} from '../plugin/build.mjs';
+import {createPluginAdapter} from '../src/adapters/siyuan/adapter.js';
+import {newState,mergeBlocks,decide} from '../src/domain/engine.js';
+import {createApplication} from '../src/usecases/application.js';
+import {validateState} from '../src/domain/validation.js';
 
 function workspace() {
   const files=new Map(),calls=[];let failure=null;

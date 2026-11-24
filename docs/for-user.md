@@ -2,7 +2,7 @@
 
 ## 安装与使用
 
-当前版本为 0.1.15，[集市收录申请](https://github.com/siyuan-note/bazaar/pull/2546)正在审核中。最低声明支持思源 3.8.5。
+当前版本为 0.1.16，[集市收录申请](https://github.com/siyuan-note/bazaar/pull/2546)正在审核中。最低声明支持思源 3.8.5。
 
 1. 从源码构建：安装 Node.js 22 或更新版本，执行 `npm run build`，无需安装依赖。
 2. 将生成的 `dist/pairsentence` 文件夹复制到工作空间的 `data/plugins/`，在思源中启用插件。
@@ -17,15 +17,5 @@
 导入备份会替换当前图谱，建议先导出备份。其他工作空间中不存在的片段，其关联会暂不可用，思考记录仍保留。
 
 普通卸载保留图谱、思考和设置；在同一工作空间重新安装后可继续使用。手动删除插件数据目录会丢失这些记录，建议卸载前导出备份。笔记原文不受影响。
-
-## 开发与发布
-
-- `npm test`：运行测试。
-- `npm run build:plugin`：生成插件目录和标准安装包 `dist/package.zip`。
-- [插件详细说明](../plugin/README.zh-CN.md)
-- [开发说明](../DEVELOPMENT.md)
-- [发布与集市收录](RELEASING.md)
-
-桌面、移动及浏览器前端均为支持目标。正式发布前仍需完成真实思源桌面、手机及两设备同步验收。
 
 代码采用 [MIT](../LICENSE) 许可；🌱 图标采用 Twemoji（CC BY 4.0），详见[署名说明](../plugin/THIRD-PARTY-NOTICES.md)。

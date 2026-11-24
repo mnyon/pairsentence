@@ -1,21 +1,18 @@
 <div class="shell">
 
   <main>
-    <header class="topbar"><div class="workspace-navigation"><a class="brand" href="/" aria-label="PairSentence，首页"><span class="brand-mark">🌱</span><span>PairSentence</span></a><nav aria-label="思考视图"><button class="nav-item active" data-view="pair"><span>⌘</span>发现关联<span class="nav-dot"></span></button><button class="nav-item" data-view="graph"><span>⌁</span>思考图谱<span class="count" id="nav-count">0</span></button><button class="nav-item" data-view="settings"><span>⚙</span>设置</button></nav></div><div class="top-actions"><span id="save-status">本地思考空间</span><button id="about-button" class="icon-button" aria-label="如何开始探索" title="如何开始探索">ⓘ</button></div></header>
+    <header class="topbar"><div class="workspace-navigation"><a class="brand" href="/" aria-label="PairSentence，首页"><span class="brand-mark">🌱</span><span>PairSentence</span></a><nav aria-label="思考视图"><button class="nav-item active" data-view="pair"><span>⌘</span>发现关联<span class="nav-dot"></span></button><button class="nav-item" data-view="graph"><span>⌁</span>联想簿<span class="count" id="nav-count">0</span></button><button class="nav-item" data-view="settings"><span>⚙</span>设置</button></nav></div><div class="top-actions"><span id="save-status">本地思考空间</span><button id="about-button" class="icon-button" aria-label="如何开始探索" title="如何开始探索">ⓘ</button></div></header>
     <section id="pair-view" class="view">
-      <div class="page-heading"><div><div class="eyebrow"><span></span> THE SPACE BETWEEN IDEAS</div><h1>关联，始于一次相遇<span>。</span></h1><p>两个来自笔记的片段。在它们之间，你看到了什么？</p></div></div>
       <div class="session-bar"><div><span class="live-dot"></span><span id="pair-mode">正在打捞片段</span></div><div>本次已探索 <strong id="session-count">00</strong> 组<span class="divider">/</span>建立 <strong id="session-links">00</strong> 条关联</div></div>
 
       <div id="pair-stage" class="pair-stage"><div class="loading-state"><span class="spinner"></span><h3>让两个想法相遇</h3><p>正在从思源笔记中打捞片段…</p></div></div>
       <div id="decision-panel" class="decision-panel" hidden>
-        <div class="decision-actions"><button id="skip-button" class="skip-button">换一组 <span>→</span></button><div class="main-decisions"><button id="link-button" class="primary-button"><span>⌁</span>建立关联 <kbd>Ctrl ↵</kbd></button></div></div>
+        <div class="decision-actions"><button id="skip-button" class="skip-button">换一组 <span>→</span></button><div class="main-decisions"><button id="link-button" class="primary-button"><span>⌁</span>添加联想 <kbd>Ctrl ↵</kbd></button></div></div>
       </div>
       <div class="bottom-note"><button id="undo-button" hidden>撤销上一步</button></div>
     </section>
     <section id="graph-view" class="view" hidden>
-      <div class="page-heading"><div><div class="eyebrow"><span></span> A CONSTELLATION OF THOUGHTS</div><h1>让零散，长成脉络<span>。</span></h1><p>每一条关联，都是你曾经走过的一小段思考。</p></div></div>
-      <div id="graph-stats" class="graph-stats"></div>
-      <div class="graph-toolbar"><div class="segment"><button data-graph-tab="flat" class="selected">平铺阅读</button><button data-graph-tab="map">星图概览</button></div><label class="search-box"><span>⌕</span><input id="graph-search" placeholder="搜索片段或思考…" aria-label="搜索片段或思考"></label></div>
+      <div id="graph-toolbar" class="graph-toolbar"><div class="segment"><button data-graph-tab="list" class="selected">联想列表</button><button data-graph-tab="map">星图概览</button></div><label class="search-box"><span>⌕</span><input id="graph-search" placeholder="搜索联想或片段…" aria-label="搜索联想或片段"></label></div>
       <div id="graph-content"></div>
     </section>
 
@@ -28,5 +25,5 @@
 </div>
 <div id="toast" class="toast" role="status"></div>
 
-<dialog id="about-dialog"><button class="dialog-close icon-button" aria-label="关闭">×</button><div class="eyebrow">A LITTLE ABOUT DISCOVERY</div><h2>让连接慢慢发生。</h2><p>两段旧笔记，偶然坐到了一起。读一读：它们让你想起了什么？</p><p>也许是同一种困惑，也许是意外的呼应。有了联想，就「建立关联」，也可以留下一句思考。</p><p>暂时没有共鸣，就「换一组」。不必为每次相遇找到答案。</p><p>等你回到「思考图谱」，这些小小的连接，会成为自己的思路。</p><button class="primary-button dialog-done">继续探索 ↗</button></dialog>
-<dialog id="thought-dialog" aria-labelledby="thought-heading"><button class="dialog-close icon-button" aria-label="返回阅读">×</button><h2 id="thought-heading">是什么，让它们相遇？</h2><p>可以留下一句思考，也可以直接保存关联。</p><div class="thought-box"><textarea id="thought" maxlength="3000" rows="3" aria-label="选填的关联思考" placeholder="它们让我想到……"></textarea></div><div class="link-dialog-actions"><button class="quiet-button dialog-done">再读一读</button><button id="confirm-link" class="primary-button">保存关联 ↗</button></div></dialog>
+<dialog id="about-dialog"><button class="dialog-close icon-button" aria-label="关闭">×</button><div class="eyebrow">A LITTLE ABOUT DISCOVERY</div><h2>让连接慢慢发生。</h2><p>两段旧笔记，偶然坐到了一起。读一读：它们让你想起了什么？</p><p>也许是同一种困惑，也许是意外的呼应。有了联想，就「添加联想」，也可以留下一句思考。</p><p>暂时没有共鸣，就「换一组」。不必为每次相遇找到答案。</p><p>等你回到「联想簿」，这些小小的连接，会成为自己的思路。</p><button class="primary-button dialog-done">继续探索 ↗</button></dialog>
+<dialog id="thought-dialog" aria-labelledby="thought-heading"><button class="dialog-close icon-button" aria-label="返回阅读">×</button><h2 id="thought-heading">是什么，让它们相遇？</h2><p>可以留下一句思考，也可以直接保存联想。</p><div class="thought-box"><textarea id="thought" maxlength="3000" rows="3" aria-label="选填的关联思考" placeholder="它们让我想到……"></textarea></div><div class="link-dialog-actions"><button class="quiet-button dialog-done">再读一读</button><button id="confirm-link" class="primary-button">保存联想 ↗</button></div></dialog>

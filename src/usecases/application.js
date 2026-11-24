@@ -1,4 +1,4 @@
-import { newState, mergeBlocks, choosePair, decide, reconcile } from './engine.js';
+import { newState, mergeBlocks, choosePair, decide, reconcile } from '../domain/engine.js';
 
 /* APPLICATION BOUNDARY — all graph writes pass through these use cases.
  * UI receives detached snapshots; domain functions only mutate a private draft.

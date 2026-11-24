@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {bindMobileInputs} from './plugin/mobile-input.js';
+import {bindMobileInputs} from '../src/adapters/host/mobile-input.js';
 
 test('mobile input taps enable native focus before IME activation and clean up listeners',()=>{
   for(const platform of ['JSAndroid','JSHarmony','browser']){

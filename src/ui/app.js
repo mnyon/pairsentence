@@ -1,15 +1,26 @@
-import {newState,components,activeEdges} from './engine.js';
-import {createApplication} from './application.js';
-import {validateState} from './validation.js';
+import {newState,components,activeEdges} from '../domain/engine.js';
+import {createApplication} from '../usecases/application.js';
+import {validateState} from '../domain/validation.js';
 import {motionPreference,saveMotion,playMotion,motionNames} from './motion.js';
-import {blockHref} from './navigation.js';
+import {blockHref} from '../adapters/siyuan/navigation.js';
 
+// Thought-book helpers shared by the list and reader views. Exported for tests.
+export function dayText(ts) { const d = new Date(ts); return Number.isNaN(d.getTime()) ? '时间未知' : `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+export function clockText(ts) { const d = new Date(ts); return Number.isNaN(d.getTime()) ? '' : `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+export function thoughtParts(edge) {
+  const text = String(edge.thought || '').trim();
+  if (!text) return { title: '', body: '', empty: true };
+  const lines = text.split(/\r?\n/);
+  return { title: (lines.shift() || '').trim() || text, body: lines.join('\n').trim(), empty: false };
+}
+export function edgeNumbers(edges) { return new Map(edges.slice().sort((a, b) => a.created - b.created || String(a.id).localeCompare(String(b.id))).map((edge, index) => [edge.id, index + 1])); }
+export function padNumber(value) { return String(value).padStart(3, '0'); }
 export function startPairSentence(document,window,localStorage,setInterval,setTimeout,adapter) {
 const request=(...args)=>adapter.request(...args);
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-let state = newState(), pair = null, view = 'pair', graphTab = 'flat', busy = false, syncing = false, ready = false;
+let state = newState(), pair = null, view = 'pair', graphTab = 'list', readerEdgeId = null, readerEditing = false, busy = false, syncing = false, ready = false;
 let sessionCount = 0, sessionLinks = 0, undo = null;
 let toastTimer;
 
@@ -128,7 +139,7 @@ async function sync() {
         card.querySelector('.source-bottom>span').textContent=`更新于 ${date(node.updated)}`;
       });
     }
-    if (view === 'graph' && !$('#graph-content .edit-thought')) drawGraph();
+    if (view === 'graph' && !$('#graph-content .thought-edit-area')) drawGraph();
 
     if (deleted) toast(`${deleted} 个段落已删除，对应关系已断开`);
   } catch (e) { reportFailure(e); }
@@ -137,15 +148,21 @@ async function sync() {
 function switchView(next) {
   if(busy || previewing)return;
   view = next;
+  if (next !== 'graph') { readerEdgeId = null; readerEditing = false; }
   for (const el of document.querySelectorAll('[data-view]')) el.classList.toggle('active', el.dataset.view === next);
   $('#pair-view').hidden = next !== 'pair'; $('#graph-view').hidden = next !== 'graph'; $('#settings-view').hidden = next !== 'settings';
   if (next === 'graph') drawGraph();
 
 }
 function graphGroups() { const connectedIds = new Set(activeEdges(state).flatMap(e => [e.a, e.b])); return components(state).filter(g => g.some(id => connectedIds.has(id))); }
-function graphNode(n, i) { return `<div class="flat-node"><span class="node-index">${String(i + 1).padStart(2,'0')}</span><div><div class="flat-source">${esc(title(n))} <span>· ${date(n.updated)}</span></div><p>${esc(n.content)}</p>${jump(n, '回到这个段落')}</div></div>`; }
-function thoughtCard(e) {
-  return `<div class="edge-thought" data-edge="${esc(e.id)}"><div class="edge-thread">⌁</div><div class="edge-body"><div class="edge-meta"><span>片段 ${esc(title(state.nodes[e.a]))} <b>↔</b> ${esc(title(state.nodes[e.b]))}</span><button class="edit-edge" data-id="${esc(e.id)}" title="编辑思考">编辑</button><button class="delete-edge" data-id="${esc(e.id)}" title="移除关联及其思考批注">移除关联</button></div><p>${e.thought ? esc(e.thought) : '<span class="no-thought">两个片段在这里相遇。点击编辑，补上一句思考。</span>'}</p></div></div>`;
+function componentNumbers() { const map = new Map(); graphGroups().forEach((group, index) => group.forEach(id => map.set(id, index + 1))); return map; }
+function filteredEdges(edges) {
+  const search = $('#graph-search').value.trim().toLowerCase();
+  if (!search) return edges;
+  return edges.filter(edge => {
+    const a = state.nodes[edge.a], b = state.nodes[edge.b];
+    return [edge.thought || '', a?.content || '', b?.content || '', a?.hpath || '', b?.hpath || ''].some(text => String(text).toLowerCase().includes(search));
+  });
 }
 function constellation(groups, edges) {
   const width = 1000, height = Math.max(480, Math.ceil(groups.length / 3) * 300);
@@ -157,45 +174,75 @@ function constellation(groups, edges) {
   return `<div class="map-panel"><div class="map-caption"><span class="live-dot"></span>每一个点，都是一段曾与你共鸣的文字 <small>点击节点回到思源</small></div><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="关系星图">${edges.map(e => { const a = positions.get(e.a), b = positions.get(e.b); if (!a || !b) return ''; return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="map-edge"><title>${esc(e.thought || '已建立关联')}</title></line>`; }).join('')}${[...positions].map(([id, p]) => `<a href="${esc(blockHref(state.nodes[id]))}" target="_blank" rel="noopener noreferrer" aria-label="${esc(title(state.nodes[id]))}"><circle cx="${p[0]}" cy="${p[1]}" r="8" class="map-node"><title>${esc(state.nodes[id].content)}</title></circle><text x="${p[0]+13}" y="${p[1]+4}">${esc(title(state.nodes[id]).slice(0, 9))}</text></a>`).join('')}</svg></div>`;
 }
 function drawGraph() {
-  const edges = activeEdges(state), groups = graphGroups(), linked = new Set(edges.flatMap(e => [e.a,e.b]));
-  $('#graph-stats').innerHTML = `<div><span>相连的片段</span><strong>${linked.size}<small> 个</small></strong></div><div><span>你建立的关联</span><strong>${edges.length}<small> 条</small></strong></div><div><span>正在生长的脉络</span><strong>${groups.length}<small> 组</small></strong></div><div><span>最大的一片星群</span><strong>${groups[0]?.length || 0}<small> 个片段</small></strong></div>`;
-  const search = $('#graph-search').value.trim().toLowerCase();
-  const filtered = groups.filter(g => g.some(id => `${state.nodes[id].content} ${state.nodes[id].hpath}`.toLowerCase().includes(search)) || edges.some(e => g.includes(e.a) && e.thought.toLowerCase().includes(search)));
+  const edges = activeEdges(state), toolbar = $('#graph-toolbar');
+  if (readerEdgeId && !edges.some(edge => edge.id === readerEdgeId)) { readerEdgeId = null; readerEditing = false; }
+  if (toolbar) toolbar.hidden = !!readerEdgeId;
+  if (readerEdgeId) { renderThoughtReader(edges.find(edge => edge.id === readerEdgeId), edges); return; }
+  const groups = graphGroups(), search = $('#graph-search').value.trim().toLowerCase();
   if (!groups.length) { $('#graph-content').innerHTML = `<div class="graph-empty"><div class="empty-constellation">·<span>⌁</span>·</div><h2>你的第一条脉络，正等待发生。</h2><p>在两个片段之间留下一次联想，<br>它们就会在这里，成为一个新的起点。</p><button id="start-explore" class="primary-button">去发现关联 ↗</button></div>`; $('#start-explore').onclick = () => switchView('pair'); return; }
-  if (!filtered.length) { $('#graph-content').innerHTML = '<div class="graph-empty"><h3>还没有匹配的片段或思考</h3><p>试试另一个关键词。</p></div>'; return; }
-  if (graphTab === 'map') { $('#graph-content').innerHTML = constellation(filtered, edges); return; }
-  $('#graph-content').innerHTML = filtered.map((g, gi) => {
-    const ge = edges.filter(e => g.includes(e.a));
-    // Chronological edges + each node shown once gives a readable, lossless flat projection.
-    const rendered = new Set(); let content = '', n = 0;
-    for (const e of ge.toSorted((a,b) => a.created - b.created)) {
-      if (!rendered.has(e.a)) { content += graphNode(state.nodes[e.a], n++); rendered.add(e.a); }
-      content += thoughtCard(e);
-      if (!rendered.has(e.b)) { content += graphNode(state.nodes[e.b], n++); rendered.add(e.b); }
-    }
-    return `<section class="component-section"><div class="component-heading"><div><span class="component-star">✳</span><h2>脉络 ${String(gi+1).padStart(2,'0')}</h2><span>${g.length} 个片段 <b>·</b> ${ge.length} 条关联</span></div><span class="component-status">持续生长中</span></div><div class="component-content">${content}</div></section>`;
-  }).join('');
-  document.querySelectorAll('.edit-edge').forEach(button => button.onclick = () => {
-    const e = state.edges.find(e => e.id === button.dataset.id), container = button.closest('.edge-body');
-    container.innerHTML = `<label class="edit-label">编辑这条关联的思考<textarea class="edit-thought" maxlength="3000">${esc(e.thought)}</textarea></label><div class="edit-actions"><button class="quiet-button cancel-edit">取消</button><button class="primary-button save-edit">保存思考</button></div>`;
-    container.querySelector('textarea').focus();
-    container.querySelector('.cancel-edit').onclick = drawGraph;
-    container.querySelector('.save-edit').onclick = async () => {
-      if(busy || syncing)return;busy=true;
-      const saveButton=container.querySelector('.save-edit');saveButton.disabled=true;
-      try{await application.editLink(e.id,container.querySelector('textarea').value);updateReadModel();undo=null;drawGraph();toast('思考已更新');}
-      catch(error){reportFailure(error);}
-      finally{busy=false;saveButton.disabled=false;}
+  if (graphTab === 'map') {
+    const filtered = groups.filter(g => g.some(id => `${state.nodes[id].content} ${state.nodes[id].hpath}`.toLowerCase().includes(search)) || edges.some(e => g.includes(e.a) && e.thought.toLowerCase().includes(search)));
+    if (!filtered.length) { $('#graph-content').innerHTML = '<div class="graph-empty"><h3>还没有匹配的联想或片段</h3><p>试试另一个关键词。</p></div>'; return; }
+    $('#graph-content').innerHTML = constellation(filtered, edges); return;
+  }
+  renderThoughtList(edges);
+}
+function renderThoughtList(edges) {
+  const list = filteredEdges(edges).slice().sort((a, b) => b.created - a.created);
+  if (!list.length) { $('#graph-content').innerHTML = '<div class="graph-empty"><h3>还没有匹配的联想或片段</h3><p>试试另一个关键词。</p></div>'; return; }
+  const numbers = edgeNumbers(edges), componentOf = componentNumbers();
+  let html = '', lastDay = '';
+  for (const edge of list) {
+    const day = dayText(edge.created);
+    if (day !== lastDay) { html += `<div class="thought-day">${esc(day)}</div>`; lastDay = day; }
+    const parts = thoughtParts(edge), component = componentOf.get(edge.a) || componentOf.get(edge.b);
+    html += `<article class="thought-entry${parts.empty ? ' is-empty' : ''}" data-edge="${esc(edge.id)}" tabindex="0" role="button" aria-label="阅读联想 ${padNumber(numbers.get(edge.id))}"><div class="thought-meta"><span>联想 ${padNumber(numbers.get(edge.id))}</span><span>${esc(clockText(edge.created))}</span></div><h3>${esc(parts.empty ? '还没有写下联想' : parts.title)}</h3><div class="thought-foot"><span class="thought-sources">${esc(title(state.nodes[edge.a]))} · ${esc(title(state.nodes[edge.b]))}</span>${component ? `<span class="thought-component">脉络 ${String(component).padStart(2,'0')}</span>` : ''}</div></article>`;
+  }
+  $('#graph-content').innerHTML = html;
+  document.querySelectorAll('.thought-entry').forEach(card => {
+    const open = () => { if (busy) return; readerEdgeId = card.dataset.edge; readerEditing = false; drawGraph(); };
+    card.onclick = open;
+    card.onkeydown = event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } };
+  });
+}
+function renderThoughtReader(edge, edges) {
+  const parts = thoughtParts(edge), numbers = edgeNumbers(edges), componentOf = componentNumbers();
+  const visible = filteredEdges(edges).slice().sort((a, b) => b.created - a.created);
+  const index = visible.findIndex(item => item.id === edge.id);
+  const component = componentOf.get(edge.a) || componentOf.get(edge.b);
+  const body = parts.body ? parts.body.split(/\r?\n/).filter(line => line.trim()).map(line => `<p>${esc(line)}</p>`).join('') : '';
+  const actions = '<div class="thought-reader-actions"><button id="thought-edit" class="quiet-button">编辑思考</button><button id="thought-remove" class="quiet-button">移除联想</button></div>';
+  const editor = '<div class="thought-editor"><textarea id="thought-edit-area" class="thought-edit-area" maxlength="3000" aria-label="编辑这条联想的思考">'+esc(edge.thought)+'</textarea><div class="thought-editor-actions"><button id="thought-cancel" class="quiet-button">取消</button><button id="thought-save" class="primary-button">保存联想</button></div></div>';
+  const sources = [edge.a, edge.b].map(id => state.nodes[id]).filter(Boolean).map(node => `<div class="thought-source"><div class="thought-source-head"><span>${esc(title(node))}</span>${jump(node, '回到这个片段')}</div><p>${esc(node.content)}</p></div>`).join('');
+  $('#graph-content').innerHTML = `<div class="thought-reader"><button id="thought-back" class="thought-back">← 返回联想列表</button><div class="thought-reader-card"><div class="thought-reader-meta"><span>联想 ${padNumber(numbers.get(edge.id))} / ${padNumber(edges.length)}</span><span>${esc(dayText(edge.created))} · ${esc(clockText(edge.created))}</span>${component ? `<span class="thought-component">脉络 ${String(component).padStart(2,'0')}</span>` : ''}</div>${readerEditing ? editor : `<h2 class="thought-reader-title${parts.empty ? ' is-empty' : ''}">${esc(parts.empty ? '还没有写下联想' : parts.title)}</h2>${body}${parts.empty ? '<p class="thought-empty">还没有写下联想。点击「编辑思考」补上一句。</p>' : ''}${actions}`}<div class="thought-source-panel"><div class="thought-source-title">来源片段</div>${sources}</div><div class="thought-reader-nav"><button id="thought-prev" class="thought-nav-button"${readerEditing || index <= 0 ? ' disabled' : ''}>← 上一条</button><button id="thought-next" class="thought-nav-button"${readerEditing || index < 0 || index >= visible.length - 1 ? ' disabled' : ''}>下一条 →</button></div><div class="thought-progress"><span style="width:${index >= 0 && visible.length ? ((index + 1) / visible.length * 100) : 0}%"></span></div></div></div>`;
+  $('#thought-back').onclick = () => { if (busy) return; readerEdgeId = null; readerEditing = false; drawGraph(); };
+  const go = id => { if (readerEditing || busy) return; readerEdgeId = id; drawGraph(); };
+  if (index > 0) $('#thought-prev').onclick = () => go(visible[index - 1].id);
+  if (index >= 0 && index < visible.length - 1) $('#thought-next').onclick = () => go(visible[index + 1].id);
+  if (readerEditing) {
+    $('#thought-cancel').onclick = () => { readerEditing = false; drawGraph(); };
+    $('#thought-save').onclick = async () => {
+      const button = $('#thought-save');
+      if (busy || syncing) return;
+      const value = $('#thought-edit-area').value;
+      busy = true; button.disabled = true;
+      try { await application.editLink(edge.id, value); updateReadModel(); undo = null; readerEditing = false; drawGraph(); toast('思考已更新'); }
+      catch (error) { reportFailure(error); }
+      finally { busy = false; button.disabled = false; }
     };
-  });
-  document.querySelectorAll('.delete-edge').forEach(button => button.onclick = async () => {
-    if(busy || syncing)return;
-    if (button.dataset.confirm !== 'yes') { button.dataset.confirm = 'yes'; button.textContent = '确认断开关联？'; return; }
-    busy=true;button.disabled=true;
-    try{await application.removeLink(button.dataset.id);updateReadModel();undo=null;drawGraph();toast('关联已移除，脉络已重新计算');}
-    catch(error){reportFailure(error);}
-    finally{busy=false;button.disabled=false;}
-  });
+    $('#thought-edit-area').focus();
+  } else {
+    $('#thought-edit').onclick = () => { if (busy || syncing) return; readerEditing = true; drawGraph(); };
+    $('#thought-remove').onclick = async event => {
+      const button = event.currentTarget;
+      if (busy || syncing) return;
+      if (button.dataset.confirm !== 'yes') { button.dataset.confirm = 'yes'; button.textContent = '确认移除联想？'; return; }
+      busy = true; button.disabled = true;
+      try { await application.removeLink(edge.id); updateReadModel(); undo = null; readerEdgeId = null; readerEditing = false; drawGraph(); toast('联想已移除，脉络已重新计算'); }
+      catch (error) { reportFailure(error); }
+      finally { busy = false; button.disabled = false; }
+    };
+  }
 }
 function beginLink(){
     if(busy||syncing||previewing||!pair)return;
@@ -209,7 +256,7 @@ function beginLink(){
   $('#thought-dialog').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();perform('link');}});
 
 document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => switchView(b.dataset.view));
-document.querySelectorAll('[data-graph-tab]').forEach(b => b.onclick = () => { if(busy)return;graphTab = b.dataset.graphTab; document.querySelectorAll('[data-graph-tab]').forEach(el => el.classList.toggle('selected', el === b)); drawGraph(); });
+document.querySelectorAll('[data-graph-tab]').forEach(b => b.onclick = () => { if(busy)return;readerEdgeId = null; readerEditing = false; graphTab = b.dataset.graphTab; document.querySelectorAll('[data-graph-tab]').forEach(el => el.classList.toggle('selected', el === b)); drawGraph(); });
 $('#graph-search').oninput = () => {if(!busy)drawGraph();};
 $('#about-button').onclick = () => $('#about-dialog').showModal();
 document.querySelectorAll('.dialog-close,.dialog-done').forEach(b => b.onclick = () => b.closest('dialog').close());
@@ -227,10 +274,19 @@ $('#undo-button').onclick = async () => {
 };
 function exportGraph() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a');
-  a.href = url; a.download = `PairSentence-思考图谱-${new Date().toISOString().slice(0,10)}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  a.href = url; a.download = `PairSentence-联想簿-${new Date().toISOString().slice(0,10)}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && view === 'pair' && !document.querySelector('dialog[open]')) { e.preventDefault(); beginLink(); } });
+document.addEventListener('keydown', e => {
+  if (view !== 'graph' || !readerEdgeId || readerEditing || busy || syncing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+  if (e.target.closest?.('input,textarea,[contenteditable="true"],dialog[open]')) return;
+  const visible = filteredEdges(activeEdges(state)).slice().sort((a, b) => b.created - a.created), index = visible.findIndex(edge => edge.id === readerEdgeId);
+  if (index < 0) return;
+  const move = direction => { const next = visible[index + direction]; if (!next) return; e.preventDefault(); readerEdgeId = next.id; drawGraph(); };
+  if (e.key === 'ArrowLeft') move(-1);
+  else if (e.key === 'ArrowRight') move(1);
+});
 window.addEventListener('focus', () => { if (ready) sync(); });
 setInterval(sync, 45000);
 async function init() {
@@ -289,7 +345,7 @@ $('#confirm-import').onclick=async()=>{
 async function boot(){await init();}
 const started=boot().catch(error=>toast(error.message));
   return {canClose(){if(busy||syncing||previewing){toast('正在完成当前操作，请稍候');return false;}return true;},
-    canReload:()=>!busy&&!syncing&&!previewing&&!$('#thought').value&&!document.querySelector('.edit-thought')&&!pendingImport,
+    canReload:()=>!busy&&!syncing&&!previewing&&!$('#thought').value&&!document.querySelector('.thought-edit-area')&&!pendingImport,
     async reload(){await started;setTheme(localStorage.getItem('pairsentence-theme')||'auto');motionMode=motionPreference();updateMotionButtons();await init();}
   };
 

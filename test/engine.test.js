@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { newState, mergeBlocks, components, decide, choosePair, reconcile, activeEdges, DAY, pairKey } from './engine.js';
+import { newState, mergeBlocks, components, decide, choosePair, reconcile, activeEdges, DAY, pairKey } from '../src/domain/engine.js';
 function fixture() { const s = newState(); mergeBlocks(s, ['a','b','c','d','e','f'].map(id => ({id,content:`${id} 一段值得思考的内容`,type:'p'}))); return s; }
 
 test('gentle passing cools only the pair, progressively, without quarantining fragments',()=>{
