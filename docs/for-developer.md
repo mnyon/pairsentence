@@ -64,7 +64,7 @@ PairSentence/
 - `plugin/build.mjs`：按分层清单打包 `src/` 插件源文件，并由根目录 README 生成包内说明，生成目录和标准 ZIP。
 - 包内说明在构建时生成：`README.en.md` → 包内 `README.md`（default），`README.md`（中文）→ 包内 `README.zh-CN.md`；图片改写为 `main` 分支的绝对 URL。不要另建 `plugin/README.md`，也不要提交生成的副本。
 
-运行 `npm test`（等价于 `node --test test`）检查领域、用例、输入处理、存储、打包和分层约束；运行 `npm run build` 生成 `dist/pairsentence/` 和 `dist/package.zip`。无需安装依赖。不要编辑生成文件。
+运行 `npm test`（等价于 `node --test`）检查领域、用例、输入处理、存储、打包和分层约束；运行 `npm run build` 生成 `dist/pairsentence/` 和 `dist/package.zip`。无需安装依赖。不要编辑生成文件。
 
 ## 配对与保存
 

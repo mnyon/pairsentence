@@ -7,6 +7,6 @@
   "type": "module",
   "scripts": {
     "build": "node plugin/build.mjs",
-    "test": "node --test test"
+    "test": "node --test"
   }
 }
