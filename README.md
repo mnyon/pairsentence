@@ -12,7 +12,7 @@
 
 
 
-![深色图谱阅读：虚构笔记之间的关联及思考记录](docs/images/graph.png)
+![深色联想列表：虚构笔记之间的关联及思考记录](docs/images/graph.png)
 
 在手机上也能用。
 

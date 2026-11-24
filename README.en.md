@@ -10,7 +10,7 @@ Where is your data, and is it safe? Everything is stored as JSON under `data/sto
 
 ![Desktop discovery: two fictional notes about reading and plants](docs/images/discover.png)
 
-![Dark graph reading: connections and thoughts between fictional notes](docs/images/graph.png)
+![Dark association list: connections and thoughts between fictional notes](docs/images/graph.png)
 
 It also works on mobile.
 
